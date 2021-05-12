@@ -165,8 +165,6 @@ class DLRM_RPC(nn.Module):
             # returns a future. We can attach a callback to each future that
             # populates the embedding_output list. Then we wait for all futures
             # after the MLP forward call.
-            print("Printing RRef Info:")
-            print("RRef Owner: {}".format(emb_rref.owner()))
             embedding_lookup, inds = emb_rref.rpc_sync().forward(
                 offsets,
                 indices,

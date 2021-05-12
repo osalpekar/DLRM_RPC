@@ -151,7 +151,7 @@ def arg_parser():
     # debugging and profiling
     parser.add_argument("--print-freq", type=int, default=1)
     parser.add_argument("--test-freq", type=int, default=-1)
-    parser.add_argument("--print-time", action="store_true", default=False)
+    parser.add_argument("--print-time", action="store_true", default=True)
     parser.add_argument("--debug-mode", action="store_true", default=False)
     parser.add_argument("--enable-profiling", action="store_true", default=False)
     parser.add_argument("--plot-compute-graph", action="store_true", default=False)
@@ -389,6 +389,10 @@ def run_trainer(args, emb_rref_list):
     total_iter = 0
     total_samp = 0
 
+    # Lists to track forward and backwad times per iteration
+    fwd_times = []
+    bwd_times = []
+
     ######## RUN TRAINING LOOP ########
     with torch.autograd.profiler.profile(enabled=args.enable_profiling, use_cuda=args.use_gpu) as prof:
         for epoch in range(args.nepochs):
@@ -416,12 +420,24 @@ def run_trainer(args, emb_rref_list):
 
                 # create distributed autograd context
                 with dist_autograd.context() as context_id:
+                    # Run forward pass
+                    fwd_start = time_wrap(args.use_gpu)
                     Z = dlrm.forward(X, offsets, indices)
+                    fwd_end = time_wrap(args.use_gpu)
+
+                    # Compute Loss
                     E = loss_fn(Z, T)
-                    # run distributed backward pass
+
+                    # Run distributed backward pass
+                    bwd_start = time_wrap(args.use_gpu)
                     dist_autograd.backward(context_id, [E])
-                    # run distributed optimizer
+                    bwd_end = time_wrap(args.use_gpu)
+
+                    # Run distributed optimizer
                     opt.step(context_id)
+
+                    fwd_times.append(fwd_end - fwd_start)
+                    bwd_times.append(bwd_end - bwd_start)
 
                 # compute loss and accuracy
                 L = E.detach().cpu().numpy()  # numpy array
@@ -465,6 +481,8 @@ def run_trainer(args, emb_rref_list):
                         )
                         + "loss {:.6f}, accuracy {:3.3f} %".format(gL, gA * 100)
                     )
+                    print("Average FWD Time (ms): {}".format(1000.0 * np.mean(fwd_times)))
+                    print("Average BWD Time (ms): {}".format(1000.0 * np.mean(bwd_times)))
 
                     log_iter = nbatches * epoch + j + 1
                     # Uncomment the line below to print out the total time with overhead
@@ -506,6 +524,7 @@ def run(rank, world_size, args):
     rpc_backend_options = rpc.TensorPipeRpcBackendOptions()
     rpc_backend_options.rpc_timeout = 100
     rpc_backend_options.init_method = args.init_method_rpc
+    # TODO: This will need some changes in the Sharded PS case
 
     # Rank 5: MASTER
     if rank == (args.num_trainers + args.num_ps):
@@ -523,8 +542,9 @@ def run(rank, world_size, args):
         ln_emb = np.fromstring(args.arch_embedding_size, dtype=int, sep="-")
         m_spa = args.arch_sparse_feature_size
         embedding_ids = set(range(0, ln_emb.size))
-        # TODO: this will need to change in the num_trainers = 16 case
-        param_server_rank = 4 
+        # When we have a single PS, the PS rank is the # of trainers, since the
+        # trainers have rank 0 through #trainers - 1.
+        param_server_rank = args.num_trainers
 
         emb_rref_list = []
         ps_name = "ps{}".format(0)
