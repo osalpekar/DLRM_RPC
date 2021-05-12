@@ -344,7 +344,6 @@ def run_trainer(args, emb_rref_list):
 
     model_parameter_rrefs = []
     # RRefs for embeddings from PS
-    #model_parameter_rrefs.extend(dlrm.parameter_rrefs())
     for ind, emb_rref in enumerate(emb_rref_list):
         ps_name = "ps{}".format(ind)
         model_parameter_rrefs.extend(

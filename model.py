@@ -21,38 +21,9 @@ def select_device(use_gpu, rank=0):
         return torch.device("cpu")
 
 
-# --------- RPC Helper Methods --------------------
-
-# On the local node, call a method with first arg as the value held by the
-# RRef. Other args are passed in as arguments to the function called.
-# Useful for calling instance methods. method could be any matching function, including
-# class methods.
-def _call_method(method, rref, *args, **kwargs):
-    return method(rref.local_value(), *args, **kwargs)
-
-
-# Given an RRef, return the result of calling the passed in method on the value
-# held by the RRef. This call is done on the remote node that owns
-# the RRef and passes along the given argument.
-# Example: If the value held by the RRef is of type Foo, then
-# remote_method(Foo.bar, rref, arg1, arg2) is equivalent to calling
-# <foo_instance>.bar(arg1, arg2) on the remote node and getting the result
-# back.
-def _remote_method(method, rref, *args, **kwargs):
-    args = [method, rref] + list(args)
-    return rpc_sync(rref.owner(), _call_method, args=args, kwargs=kwargs)
-
-# Creates a local RRef on each of the parameters of the model.
-def _parameter_rrefs(Module):
-    param_rrefs = []
-    for param in Module.parameters():
-        param_rrefs.append(RRef(param))
-    return param_rrefs
-
-
 class MLP(nn.Module):
     """
-    MLP model consisting of several linear layers following by activations.
+    MLP module consisting of several linear layers following by activations.
     These are the dense parameters local to each trainer and will be synced via
     DDP.
     """
@@ -179,11 +150,8 @@ class DLRM_RPC(nn.Module):
         bot_mlp = MLP(ln_bot, sigmoid_bot, use_gpu, rank, name="bot_mlp")
 
         device_ids = [rank] if use_gpu else None
-        #self.top_mlp_ddp = DDP(top_mlp.to(self.device), device_ids=[rank])
-        #self.bot_mlp_ddp = DDP(bot_mlp.to(self.device), device_ids=[rank])
-        # TODO: Use the 2 lines above with GPU and 2 lines below with CPU
-        self.top_mlp_ddp = DDP(top_mlp.to(self.device), device_ids=None)
-        self.bot_mlp_ddp = DDP(bot_mlp.to(self.device), device_ids=None)
+        self.top_mlp_ddp = DDP(top_mlp.to(self.device), device_ids=device_ids)
+        self.bot_mlp_ddp = DDP(bot_mlp.to(self.device), device_ids=device_ids)
 
     def forward(self, dense_x, offsets, indices):
         """
@@ -200,13 +168,6 @@ class DLRM_RPC(nn.Module):
                 offsets,
                 indices,
             )
-            #embedding_lookup, inds = rpc_sync(emb_rref.owner(), Emb.forward, offsets, indices)
-            #embedding_lookup, inds = _remote_method(
-            #    Emb.forward,
-            #    emb_rref,
-            #    offsets,
-            #    indices
-            #)
             for ind, val in enumerate(inds):
                 embedding_output[val] = embedding_lookup[ind]
 
@@ -248,13 +209,3 @@ class DLRM_RPC(nn.Module):
             )
 
         return R
-
-    def parameter_rrefs(self):
-        remote_params = []
-        # get RRefs of Embeddings
-        for rref in self.emb_rref:
-            remote_params.extend(_remote_method(_parameter_rrefs, rref))
-        # get RRefs of MLPs
-        # remote_params.extend(_remote_method(_parameter_rrefs, self.bot_l_rref))
-        # remote_params.extend(_remote_method(_parameter_rrefs, self.top_l_rref))
-        return remote_params
