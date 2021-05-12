@@ -161,7 +161,10 @@ class DLRM_RPC(nn.Module):
         embedding_output = [0 for i in range(0, self.ln.size)]
         for emb_rref in self.emb_rref:
             # TODO: can we make this part async so it overlaps with the bottom
-            # MLP forward?
+            # MLP forward? I'm thinking we can make this an rpc_async that
+            # returns a future. We can attach a callback to each future that
+            # populates the embedding_output list. Then we wait for all futures
+            # after the MLP forward call.
             print("Printing RRef Info:")
             print("RRef Owner: {}".format(emb_rref.owner()))
             embedding_lookup, inds = emb_rref.rpc_sync().forward(

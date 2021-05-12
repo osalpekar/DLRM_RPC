@@ -390,90 +390,90 @@ def run_trainer(args, emb_rref_list):
     total_samp = 0
 
     ######## RUN TRAINING LOOP ########
-    #with torch.autograd.profiler.profile(args.enable_profiling, args.use_gpu) as prof:
-    for epoch in range(args.nepochs):
+    with torch.autograd.profiler.profile(enabled=args.enable_profiling, use_cuda=args.use_gpu) as prof:
+        for epoch in range(args.nepochs):
 
-        accum_time_begin = time_wrap(args.use_gpu)
-
-        if args.mlperf_logging:
-            previous_iteration_time = None
-
-        for j, (X, offsets, indices, T) in enumerate(train_loader):
+            accum_time_begin = time_wrap(args.use_gpu)
 
             if args.mlperf_logging:
-                current_time = time_wrap(args.use_gpu)
-                if previous_iteration_time:
-                    iteration_time = current_time - previous_iteration_time
+                previous_iteration_time = None
+
+            for j, (X, offsets, indices, T) in enumerate(train_loader):
+
+                if args.mlperf_logging:
+                    current_time = time_wrap(args.use_gpu)
+                    if previous_iteration_time:
+                        iteration_time = current_time - previous_iteration_time
+                    else:
+                        iteration_time = 0
+                    previous_iteration_time = current_time
                 else:
-                    iteration_time = 0
-                previous_iteration_time = current_time
-            else:
-                t1 = time_wrap(args.use_gpu)
+                    t1 = time_wrap(args.use_gpu)
 
-            # early exit if nbatches was set by the user and has been exceeded
-            if nbatches > 0 and j >= nbatches:
-                break
+                # early exit if nbatches was set by the user and has been exceeded
+                if nbatches > 0 and j >= nbatches:
+                    break
 
-            # create distributed autograd context
-            with dist_autograd.context() as context_id:
-                Z = dlrm.forward(X, offsets, indices)
-                E = loss_fn(Z, T)
-                # run distributed backward pass
-                dist_autograd.backward(context_id, [E])
-                # run distributed optimizer
-                opt.step(context_id)
+                # create distributed autograd context
+                with dist_autograd.context() as context_id:
+                    Z = dlrm.forward(X, offsets, indices)
+                    E = loss_fn(Z, T)
+                    # run distributed backward pass
+                    dist_autograd.backward(context_id, [E])
+                    # run distributed optimizer
+                    opt.step(context_id)
 
-            # compute loss and accuracy
-            L = E.detach().cpu().numpy()  # numpy array
-            S = Z.detach().cpu().numpy()  # numpy array
-            T = T.detach().cpu().numpy()  # numpy array
-            mbs = T.shape[0]  # = args.mini_batch_size except maybe for last
-            A = np.sum((np.round(S, 0) == T).astype(np.uint8))
+                # compute loss and accuracy
+                L = E.detach().cpu().numpy()  # numpy array
+                S = Z.detach().cpu().numpy()  # numpy array
+                T = T.detach().cpu().numpy()  # numpy array
+                mbs = T.shape[0]  # = args.mini_batch_size except maybe for last
+                A = np.sum((np.round(S, 0) == T).astype(np.uint8))
 
-            if args.mlperf_logging:
-                total_time += iteration_time
-            else:
-                t2 = time_wrap(args.use_gpu)
-                total_time += t2 - t1
-            total_accu += A
-            total_loss += L * mbs
-            total_iter += 1
-            total_samp += mbs
+                if args.mlperf_logging:
+                    total_time += iteration_time
+                else:
+                    t2 = time_wrap(args.use_gpu)
+                    total_time += t2 - t1
+                total_accu += A
+                total_loss += L * mbs
+                total_iter += 1
+                total_samp += mbs
 
-            should_print = ((j + 1) % args.print_freq == 0) or (j + 1 == nbatches)
-            should_test = (
-                (args.test_freq > 0)
-                and (args.data_generation == "dataset")
-                and (((j + 1) % args.test_freq == 0) or (j + 1 == nbatches))
-            )
-
-            # print time, loss and accuracy
-            if should_print or should_test:
-                gT = 1000.0 * total_time / total_iter if args.print_time else -1
-                total_time = 0
-
-                gA = total_accu / total_samp
-                total_accu = 0
-
-                gL = total_loss / total_samp
-                total_loss = 0
-
-                str_run_type = "inference" if args.inference_only else "training"
-                print(
-                    "Finished {} it {}/{} of epoch {}, {:.2f} ms/it, ".format(
-                        str_run_type, j + 1, nbatches, epoch, gT
-                    )
-                    + "loss {:.6f}, accuracy {:3.3f} %".format(gL, gA * 100)
+                should_print = ((j + 1) % args.print_freq == 0) or (j + 1 == nbatches)
+                should_test = (
+                    (args.test_freq > 0)
+                    and (args.data_generation == "dataset")
+                    and (((j + 1) % args.test_freq == 0) or (j + 1 == nbatches))
                 )
 
-                log_iter = nbatches * epoch + j + 1
-                # Uncomment the line below to print out the total time with overhead
-                # print("Accumulated time so far: {}" \
-                # .format(time_wrap(args.use_gpu) - accum_time_begin))
-                total_iter = 0
-                total_samp = 0
+                # print time, loss and accuracy
+                if should_print or should_test:
+                    gT = 1000.0 * total_time / total_iter if args.print_time else -1
+                    total_time = 0
 
-    # END TRAIN LOOP
+                    gA = total_accu / total_samp
+                    total_accu = 0
+
+                    gL = total_loss / total_samp
+                    total_loss = 0
+
+                    str_run_type = "inference" if args.inference_only else "training"
+                    print(
+                        "Finished {} it {}/{} of epoch {}, {:.2f} ms/it, ".format(
+                            str_run_type, j + 1, nbatches, epoch, gT
+                        )
+                        + "loss {:.6f}, accuracy {:3.3f} %".format(gL, gA * 100)
+                    )
+
+                    log_iter = nbatches * epoch + j + 1
+                    # Uncomment the line below to print out the total time with overhead
+                    # print("Accumulated time so far: {}" \
+                    # .format(time_wrap(args.use_gpu) - accum_time_begin))
+                    total_iter = 0
+                    total_samp = 0
+
+        # END TRAIN LOOP
 
     # profiling
     if args.enable_profiling:
