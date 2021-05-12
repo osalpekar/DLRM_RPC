@@ -7,6 +7,7 @@ import submitit
 
 import numpy as np
 import os
+import socket
 
 # data generation
 sys.path.append(os.getcwd())
@@ -182,13 +183,27 @@ def arg_parser():
 
     #assert args.distributed_rank is not None, "must provide rank argument."
 
-    if args.master_addr is not None:
+    if args.master_addr is not "":
+        # This means SLURM is being used and all init args are set correctly
         os.environ['MASTER_ADDR'] = args.master_addr
         os.environ["MASTER_PORT"] = args.distributed_port
     else:
-        os.environ['MASTER_ADDR'] = "100.97.69.46"
-        os.environ["MASTER_PORT"] = "29500" 
-
+        # This means SLURM is NOT being used.
+        # NOTE: This means you are restricted to single-node training.
+        hostname = socket.gethostname()
+        LOCAL_IP = socket.gethostbyname(hostname)
+        RPC_PORT = "29500"
+        DDP_PORT = "29501"
+        os.environ['MASTER_ADDR'] = LOCAL_IP
+        os.environ["MASTER_PORT"] = RPC_PORT
+        args.init_method_rpc = 'tcp://{host}:{port}'.format(
+            host=LOCAL_IP,
+            port=RPC_PORT,
+        )
+        args.init_method_ddp = 'tcp://{host}:{port}'.format(
+            host=LOCAL_IP,
+            port=DDP_PORT,
+        )
 
     if args.mlperf_logging:
         print('command line args: ', json.dumps(vars(args)))
@@ -489,10 +504,8 @@ def run(rank, world_size, args):
     # Using different port numbers in TCP init_method for init_rpc and
     # init_process_group to avoid port conflicts.
     rpc_backend_options = rpc.TensorPipeRpcBackendOptions()
-    rpc_backend_options.init_method = "tcp://100.97.69.46:29500"
     rpc_backend_options.rpc_timeout = 100
-    # TODO: use below option with slurm
-    # rpc_backend_options.init_method = args.init_method_rpc 
+    rpc_backend_options.init_method = args.init_method_rpc
 
     # Rank 5: MASTER
     if rank == (args.num_trainers + args.num_ps):
@@ -510,6 +523,7 @@ def run(rank, world_size, args):
         ln_emb = np.fromstring(args.arch_embedding_size, dtype=int, sep="-")
         m_spa = args.arch_sparse_feature_size
         embedding_ids = set(range(0, ln_emb.size))
+        # TODO: this will need to change in the num_trainers = 16 case
         param_server_rank = 4 
 
         emb_rref_list = []
@@ -545,9 +559,7 @@ def run(rank, world_size, args):
             backend=backend,
             rank=rank,
             world_size=args.num_trainers,
-            # init_method=args.init_method_ddp,
-            # TODO: use above option with slurm
-            init_method="tcp://100.97.69.46:29501",
+            init_method=args.init_method_ddp,
         )
 
         # Initialize RPC. Trainer just waits for RPCs from master.
@@ -571,7 +583,7 @@ def run(rank, world_size, args):
             backend=rpc.BackendType.TENSORPIPE,
             rpc_backend_options=rpc_backend_options,
         )
-        # parameter server do nothing
+        # parameter server does nothing
         pass
 
     rpc.shutdown()
