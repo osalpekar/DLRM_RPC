@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import sys
 import time
 import json
-import submitit
+#import submitit
 
 import numpy as np
 import os
@@ -140,7 +140,8 @@ def arg_parser():
     parser.add_argument("--memory-map", action="store_true", default=False)
     # training
     parser.add_argument("--mini-batch-size", type=int, default=1)
-    parser.add_argument("--nepochs", type=int, default=1)
+    parser.add_argument("--nepochs", type=int, default=30)
+    parser.add_argument("--warmup-epochs", type=int, default=10)
     parser.add_argument("--learning-rate", type=float, default=0.01)
     parser.add_argument("--print-precision", type=int, default=5)
     parser.add_argument("--sync-dense-params", type=bool, default=True)
@@ -227,7 +228,7 @@ def run_trainer(args, emb_rref_list):
 
     args.use_gpu = args.use_gpu and torch.cuda.is_available()
     init_gpu(args.use_gpu)
-    print(args)
+    #print(args)
 
     ######## PREPARE TRAINING DATA ########
     ln_bot = np.fromstring(args.arch_mlp_bot, dtype=int, sep="-")
@@ -436,8 +437,9 @@ def run_trainer(args, emb_rref_list):
                     # Run distributed optimizer
                     opt.step(context_id)
 
-                    fwd_times.append(fwd_end - fwd_start)
-                    bwd_times.append(bwd_end - bwd_start)
+                    if epoch >= args.warmup_epochs:
+                        fwd_times.append(fwd_end - fwd_start)
+                        bwd_times.append(bwd_end - bwd_start)
 
                 # compute loss and accuracy
                 L = E.detach().cpu().numpy()  # numpy array
@@ -481,8 +483,6 @@ def run_trainer(args, emb_rref_list):
                         )
                         + "loss {:.6f}, accuracy {:3.3f} %".format(gL, gA * 100)
                     )
-                    print("Average FWD Time (ms): {}".format(1000.0 * np.mean(fwd_times)))
-                    print("Average BWD Time (ms): {}".format(1000.0 * np.mean(bwd_times)))
 
                     log_iter = nbatches * epoch + j + 1
                     # Uncomment the line below to print out the total time with overhead
@@ -492,6 +492,15 @@ def run_trainer(args, emb_rref_list):
                     total_samp = 0
 
         # END TRAIN LOOP
+        mean_fwd = 1000.0 * np.mean(fwd_times)
+        mean_bwd = 1000.0 * np.mean(bwd_times)
+        std_fwd = 1000.0 * np.std(fwd_times)
+        std_bwd = 1000.0 * np.std(bwd_times)
+
+        print("[Trainer {}] Average FWD Time (ms): {}".format(args.distributed_rank, mean_fwd))
+        print("[Trainer {}] STD DEV FWD Time (ms): {}".format(args.distributed_rank, std_fwd))
+        print("[Trainer {}] Average BWD Time (ms): {}".format(args.distributed_rank, mean_bwd))
+        print("[Trainer {}] STD DEV BWD Time (ms): {}".format(args.distributed_rank, std_bwd))
 
     # profiling
     if args.enable_profiling:
@@ -518,6 +527,12 @@ def run(rank, world_size, args):
     """
     if args.distributed_rank is None:
         args.distributed_rank = rank
+
+    numCudaDevices = torch.cuda.device_count()
+    localRank = rank % numCudaDevices
+    torch.cuda.set_device(localRank)
+
+    #print("Rank {} is using GPU {}".format(rank, torch.cuda.current_device()))
 
     # Using different port numbers in TCP init_method for init_rpc and
     # init_process_group to avoid port conflicts.
@@ -554,26 +569,26 @@ def run(rank, world_size, args):
             args=(m_spa, ln_emb, embedding_ids, args.use_gpu, param_server_rank),
         )
         emb_rref_list.append(emb_rref)
-        print("Embedding RRef created:")
-        print(emb_rref)
+        #print("Embedding RRef created:")
+        #print(emb_rref)
 
         # Run the training loop on the trainers.
         futs = []
         for trainer_rank in range(args.num_trainers):
             trainer_name = "trainer{}".format(trainer_rank)
+            args.distributed_rank = trainer_rank
             fut = rpc.rpc_async(
                 trainer_name, run_trainer, args=(args, emb_rref_list)
             )
             futs.append(fut)
 
         torch.futures.wait_all(futs)
-        # TODO: print measurements - or adapt the current measurements used in
-        # train loop
 
     # Rank 0-3: Trainers
     elif rank >= 0 and rank < args.num_trainers:
         
-        backend = dist.Backend.NCCL if args.use_gpu else dist.Backend.GLOO
+        #backend = dist.Backend.NCCL if args.use_gpu else dist.Backend.GLOO
+        backend=dist.Backend.GLOO
         # Init PG for DDP
         dist.init_process_group(
             backend=backend,
@@ -615,18 +630,20 @@ def main():
     args.num_ps = 1
     args.world_size = args.num_trainers + args.num_ps + 1
     args.use_gpu = args.use_gpu and torch.cuda.is_available()
+    #torch.backends.cudnn.enabled = False
 
     mp.spawn(run, args=(args.world_size, args,), nprocs=args.world_size, join=True)
 
-if __name__ == "__main__":
-    main()
+#def submit():
+#    executor = submitit.AutoExecutor(folder="log")
+#    executor.update_parameters(
+#        timeout_min=10,
+#        slurm_partition="learnfair",
+#        nodes=1
+#    )
+#    job = executor.submit(main)
+#    output = job.result()
 
-def submit():
-    executor = submitit.AutoExecutor(folder="log")
-    executor.update_parameters(
-        timeout_min=10,
-        slurm_partition="learnfair",
-        nodes=1
-    )
-    job = executor.submit(main)
-    output = job.result()
+if __name__ == "__main__":
+    # Use main() to launch locally and submit() to launch on fair cluster
+    main()
