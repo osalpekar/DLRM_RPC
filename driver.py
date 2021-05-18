@@ -632,7 +632,7 @@ def launch_master(rank, world_size, args, rpc_backend_options):
 
     torch.futures.wait_all(futs)
 
-def run(rank, world_size, args):
+def run(localRank, world_size, args):
     """
     General purpose run function that inits RPC, runs training and shuts down
     RPC.
@@ -648,12 +648,13 @@ def run(rank, world_size, args):
     Rank 16: PS
     Rank 17: Master
     """
+    rank = localRank + (8 * args.node_rank)
     if args.distributed_rank is None:
         args.distributed_rank = rank
 
     numCudaDevices = torch.cuda.device_count()
-    localRank = rank % numCudaDevices
-    torch.cuda.set_device(localRank)
+    torch.cuda.set_device(localRank % numCudaDevices)
+    
 
     #print("Rank {} is using GPU {}".format(rank, torch.cuda.current_device()))
 
@@ -679,13 +680,24 @@ def run(rank, world_size, args):
 
 def main():
     args = arg_parser()
-    args.num_trainers = 4
-    args.num_ps = 1
+
+    if args.num_nodes == 1:
+        # SINGLE NODE TRAINING
+        assert(args.num_ps < 3)
+        local_world_size = args.num_trainers + args.num_ps + 1
+
+    elif args.num_nodes > 1:
+        # MULTI-NODE TRAINING
+        if args.node_rank == 0 or args.node_rank == 1:
+            local_world_size = 8
+        elif args.node_rank == 2:
+            assert(args.num_ps < 7)
+            local_world_size = args.num_ps + 1
+
     args.world_size = args.num_trainers + args.num_ps + 1
     args.use_gpu = args.use_gpu and torch.cuda.is_available()
-    #torch.backends.cudnn.enabled = False
 
-    mp.spawn(run, args=(args.world_size, args,), nprocs=args.world_size, join=True)
+    mp.spawn(run, args=(args.world_size, args,), nprocs=local_world_size, join=True)
 
 #def submit():
 #    executor = submitit.AutoExecutor(folder="log")
