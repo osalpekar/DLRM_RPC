@@ -211,6 +211,30 @@ def arg_parser():
 
     return args
 
+def profile_hook(state_dict, bucket):
+    rank = dist.get_rank()
+    tensor = bucket.get_tensors()[0]
+    metrics = {}
+    state_dict[bucket.get_index()] = metrics
+
+    # record event before comm
+    e_bfr = torch.cuda.Event(enable_timing=True)
+    metrics["e_bfr"] = e_bfr
+    with torch.cuda.device(rank):
+        e_bfr.record()
+
+    # launch async comm
+    fut = dist.all_reduce(tensor, async_op=True).get_future()
+
+    def cb(fut):
+        # record event after comm
+        e_aft = torch.cuda.Event(enable_timing=True)
+        metrics["e_aft"] = e_aft
+        with torch.cuda.device(rank):
+            e_aft.record()
+
+    fut.then(cb)
+    return fut
 
 def run_trainer(args, emb_rref_list):
     """
@@ -381,6 +405,13 @@ def run_trainer(args, emb_rref_list):
             torch.cuda.synchronize()
         return time.time()
 
+    # TODO: uncomment for comp/comms DDP benchmark
+    #if args.distributed_rank == 0:
+    #    state_dict_top = {}
+    #    state_dict_bot = {}
+    #    dlrm.top_mlp_ddp.register_comm_hook(state_dict_top, profile_hook)
+    #    dlrm.bot_mlp_ddp.register_comm_hook(state_dict_bot, profile_hook)
+
     # training or inference
     best_gA_test = 0
     best_auc_test = 0
@@ -393,6 +424,8 @@ def run_trainer(args, emb_rref_list):
     # Lists to track forward and backwad times per iteration
     fwd_times = []
     bwd_times = []
+
+    rpc_fwd_times = []
 
     ######## RUN TRAINING LOOP ########
     with torch.autograd.profiler.profile(enabled=args.enable_profiling, use_cuda=args.use_gpu) as prof:
@@ -423,7 +456,7 @@ def run_trainer(args, emb_rref_list):
                 with dist_autograd.context() as context_id:
                     # Run forward pass
                     fwd_start = time_wrap(args.use_gpu)
-                    Z = dlrm.forward(X, offsets, indices)
+                    Z, rpc_delays, rpc_total = dlrm.forward(X, offsets, indices)
                     fwd_end = time_wrap(args.use_gpu)
 
                     # Compute Loss
@@ -440,6 +473,7 @@ def run_trainer(args, emb_rref_list):
                     if epoch >= args.warmup_epochs:
                         fwd_times.append(fwd_end - fwd_start)
                         bwd_times.append(bwd_end - bwd_start)
+                        rpc_fwd_times.extend(rpc_delays)
 
                 # compute loss and accuracy
                 L = E.detach().cpu().numpy()  # numpy array
@@ -492,15 +526,28 @@ def run_trainer(args, emb_rref_list):
                     total_samp = 0
 
         # END TRAIN LOOP
+        # TODO: uncomment for comp/comms DDP benchmark
+        # TODO: for bottom also
+        #torch.cuda.synchronize(args.distributed_rank)
+        #if args.distributed_rank == 0:
+        #    for bucket_index in range(len(state_dict_top)):
+        #        e_bfr = state_dict[bucket_index]["e_bfr"]
+        #        e_aft = state_dict[bucket_index]["e_aft"]
+        #        print(f"bucket {bucket_index} comm time: {e_bfr.elapsed_time(e_aft)}")
+
         mean_fwd = 1000.0 * np.mean(fwd_times)
         mean_bwd = 1000.0 * np.mean(bwd_times)
         std_fwd = 1000.0 * np.std(fwd_times)
         std_bwd = 1000.0 * np.std(bwd_times)
+        rpc_fwd_mean = 1000.0 * np.mean(rpc_fwd_times)
+        rpc_fwd_std = 1000.0 * np.std(rpc_fwd_times)
 
         print("[Trainer {}] Average FWD Time (ms): {}".format(args.distributed_rank, mean_fwd))
         print("[Trainer {}] STD DEV FWD Time (ms): {}".format(args.distributed_rank, std_fwd))
         print("[Trainer {}] Average BWD Time (ms): {}".format(args.distributed_rank, mean_bwd))
         print("[Trainer {}] STD DEV BWD Time (ms): {}".format(args.distributed_rank, std_bwd))
+        print("[Trainer {}] Average RPC FWD Time (ms): {}".format(args.distributed_rank, rpc_fwd_mean))
+        print("[Trainer {}] STD DEV RPC FWD Time (ms): {}".format(args.distributed_rank, rpc_fwd_std))
 
     # profiling
     if args.enable_profiling:

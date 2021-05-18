@@ -1,5 +1,8 @@
-import numpy as np
 import sys
+import time
+import numpy as np
+from functools import partial
+
 import torch
 import torch.nn as nn
 from torch.distributed import rpc
@@ -20,6 +23,19 @@ def select_device(use_gpu, rank=0):
     else:
         return torch.device("cpu")
 
+def stamp_time(cuda=False):
+    if cuda:
+        event = torch.cuda.Event(enable_timing=True)
+        event.record(torch.cuda.current_stream(0))
+        return event
+    else:
+        return time.time()
+
+def compute_delay(ts, cuda=False):
+    if cuda:
+        return ts["tik"].elapsed_time(ts["tok"]) / 1e3
+    else:
+        return ts["tok"] - ts["tik"]
 
 class MLP(nn.Module):
     """
@@ -138,6 +154,7 @@ class DLRM_RPC(nn.Module):
         set_rand_seed()
 
         self.device = select_device(use_gpu, rank)
+        self.use_gpu = use_gpu
 
         self.arch_interaction_op = arch_interaction_op
         self.arch_interaction_itself = arch_interaction_itself
@@ -158,17 +175,44 @@ class DLRM_RPC(nn.Module):
         dense_x is the dense input that is passed through the bottom MLP.
         offsets and indices are used for Embedding Lookups (via RPC).
         """
+
+        timestamps = {}
+        def mark_complete_cpu(index, cuda, fut):
+            timestamps[index]["tok"] = stamp_time(cuda)
+
+        start = time.time()
         embedding_output = [0 for i in range(0, self.ln.size)]
+        futs = []
+        index = 0
         for emb_rref in self.emb_rref:
             # TODO: can we make this part async so it overlaps with the bottom
             # MLP forward? I'm thinking we can make this an rpc_async that
             # returns a future. We can attach a callback to each future that
             # populates the embedding_output list. Then we wait for all futures
             # after the MLP forward call.
-            embedding_lookup, inds = emb_rref.rpc_sync().forward(
+            timestamps[index] = {}
+            timestamps[index]["tik"] = stamp_time(self.use_gpu)
+            fut = emb_rref.rpc_async().forward(
                 offsets,
                 indices,
             )
+            fut.add_done_callback(partial(mark_complete_cpu, index, self.use_gpu))
+            futs.append(fut)
+            index += 1
+
+        torch.futures.wait_all(futs)
+        end = time.time()
+
+        delays = []
+        for index in range(len(timestamps)):
+            delays.append(compute_delay(timestamps[index], self.use_gpu))
+
+        #mean = sum(delays)/len(delays)
+        #print(f"Embedding Lookup RPC {'cuda' if self.use_gpu else 'cpu'}: mean = {mean}, total = {end - start}", flush=True)
+        
+        for fut in futs:
+            embedding_lookup, inds = fut.value()
+            #TODO: you can make this part a callback
             for ind, val in enumerate(inds):
                 embedding_output[val] = embedding_lookup[ind]
 
@@ -182,7 +226,7 @@ class DLRM_RPC(nn.Module):
         # clamp to [0,1] to represent probability of click
         z = torch.clamp(p, min=self.loss_threshold, max=(1.0 - self.loss_threshold))
 
-        return z
+        return z, delays, end-start
 
     def interact_features(self, x, embedding_output):
         if self.arch_interaction_op == "dot":
