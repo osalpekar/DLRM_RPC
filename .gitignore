@@ -1,4 +1,6 @@
 __pycache__/
 log/
 logs/
+log_test/
+outputs/
 out
