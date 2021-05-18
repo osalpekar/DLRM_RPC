@@ -111,6 +111,8 @@ def arg_parser():
         Recommendation Model (DLRM)""")
     parser.add_argument("--num-trainers", type=int, default=4)
     parser.add_argument("--num-ps", type=int, default=1)
+    parser.add_argument("--num-nodes", type=int, default=1)
+    parser.add_argument("--node-rank", type=int, default=0)
     # model related parameters
     parser.add_argument("--arch-sparse-feature-size", type=int, default=2)
     parser.add_argument("--arch-embedding-size", type=str, default="4-3-2")
@@ -556,6 +558,80 @@ def run_trainer(args, emb_rref_list):
             prof.export_chrome_trace("./dlrm_s_pytorch.json")
         # print(prof.key_averages().table(sort_by="cpu_time_total"))
 
+
+def launch_ps(rank, world_size, args, rpc_backend_options):
+    # Init RPC
+    ps_name = "ps{}".format(rank - args.num_trainers)
+    rpc.init_rpc(
+        ps_name,
+        rank=rank,
+        world_size=world_size,
+        backend=rpc.BackendType.TENSORPIPE,
+        rpc_backend_options=rpc_backend_options,
+    )
+    # parameter server does nothing
+    pass
+
+def launch_trainer(rank, world_size, args, rpc_backend_options):
+    # Init PG for DDP
+    backend = dist.Backend.GLOO
+    #backend = dist.Backend.NCCL if args.use_gpu else dist.Backend.GLOO
+
+    dist.init_process_group(
+        backend=backend,
+        rank=rank,
+        world_size=args.num_trainers,
+        init_method=args.init_method_ddp,
+    )
+
+    # Initialize RPC. Trainer just waits for RPCs from master.
+    trainer_name = "trainer{}".format(rank)
+    rpc.init_rpc(
+        trainer_name,
+        rank=rank,
+        world_size=world_size,
+        rpc_backend_options=rpc_backend_options,
+    )
+
+def launch_master(rank, world_size, args, rpc_backend_options):
+    # Init RPC
+    rpc.init_rpc(
+        "master",
+        rank=rank,
+        backend=rpc.BackendType.TENSORPIPE,
+        world_size=world_size,
+        rpc_backend_options=rpc_backend_options,
+    )
+
+    # Build the Embedding tables on the Parameter Servers.
+    ln_emb = np.fromstring(args.arch_embedding_size, dtype=int, sep="-")
+    m_spa = args.arch_sparse_feature_size
+    embedding_ids = set(range(0, ln_emb.size))
+    # When we have a single PS, the PS rank is the # of trainers, since the
+    # trainers have rank 0 through #trainers - 1.
+    param_server_rank = args.num_trainers
+
+    emb_rref_list = []
+    ps_name = "ps{}".format(0)
+    emb_rref = rpc.remote(
+        ps_name,
+        model.Emb,
+        args=(m_spa, ln_emb, embedding_ids, args.use_gpu, param_server_rank),
+    )
+    emb_rref_list.append(emb_rref)
+
+    # Run the training loop on the trainers.
+    futs = []
+    for trainer_rank in range(args.num_trainers):
+        trainer_name = "trainer{}".format(trainer_rank)
+        args.distributed_rank = trainer_rank
+        fut = rpc.rpc_async(
+            trainer_name, run_trainer, args=(args, emb_rref_list)
+        )
+        futs.append(fut)
+
+    torch.futures.wait_all(futs)
+
 def run(rank, world_size, args):
     """
     General purpose run function that inits RPC, runs training and shuts down
@@ -581,92 +657,22 @@ def run(rank, world_size, args):
 
     #print("Rank {} is using GPU {}".format(rank, torch.cuda.current_device()))
 
-    # Using different port numbers in TCP init_method for init_rpc and
-    # init_process_group to avoid port conflicts.
     rpc_backend_options = rpc.TensorPipeRpcBackendOptions()
     rpc_backend_options.rpc_timeout = 100
     rpc_backend_options.init_method = args.init_method_rpc
-    # TODO: This will need some changes in the Sharded PS case
 
     # Rank 5: MASTER
     if rank == (args.num_trainers + args.num_ps):
-
-        # Init RPC
-        rpc.init_rpc(
-            "master",
-            rank=rank,
-            backend=rpc.BackendType.TENSORPIPE,
-            world_size=world_size,
-            rpc_backend_options=rpc_backend_options,
-        )
-
-        # Build the Embedding tables on the Parameter Servers.
-        ln_emb = np.fromstring(args.arch_embedding_size, dtype=int, sep="-")
-        m_spa = args.arch_sparse_feature_size
-        embedding_ids = set(range(0, ln_emb.size))
-        # When we have a single PS, the PS rank is the # of trainers, since the
-        # trainers have rank 0 through #trainers - 1.
-        param_server_rank = args.num_trainers
-
-        emb_rref_list = []
-        ps_name = "ps{}".format(0)
-        emb_rref = rpc.remote(
-            ps_name,
-            model.Emb,
-            args=(m_spa, ln_emb, embedding_ids, args.use_gpu, param_server_rank),
-        )
-        emb_rref_list.append(emb_rref)
-        #print("Embedding RRef created:")
-        #print(emb_rref)
-
-        # Run the training loop on the trainers.
-        futs = []
-        for trainer_rank in range(args.num_trainers):
-            trainer_name = "trainer{}".format(trainer_rank)
-            args.distributed_rank = trainer_rank
-            fut = rpc.rpc_async(
-                trainer_name, run_trainer, args=(args, emb_rref_list)
-            )
-            futs.append(fut)
-
-        torch.futures.wait_all(futs)
+        launch_master(rank, world_size, args, rpc_backend_options)
 
     # Rank 0-3: Trainers
     elif rank >= 0 and rank < args.num_trainers:
-        
-        #backend = dist.Backend.NCCL if args.use_gpu else dist.Backend.GLOO
-        backend=dist.Backend.GLOO
-        # Init PG for DDP
-        dist.init_process_group(
-            backend=backend,
-            rank=rank,
-            world_size=args.num_trainers,
-            init_method=args.init_method_ddp,
-        )
-
-        # Initialize RPC. Trainer just waits for RPCs from master.
-        trainer_name = "trainer{}".format(rank)
-        rpc.init_rpc(
-            trainer_name,
-            rank=rank,
-            world_size=world_size,
-            rpc_backend_options=rpc_backend_options,
-        )
+       launch_trainer(rank, world_size, args, rpc_backend_options) 
 
     # Rank 4: Parameter Server
     elif rank >= args.num_trainers and rank < (args.num_trainers + args.num_ps):
+        launch_ps(rank, world_size, args, rpc_backend_options)
 
-        # Init RPC
-        ps_name = "ps{}".format(rank - args.num_trainers)
-        rpc.init_rpc(
-            ps_name,
-            rank=rank,
-            world_size=world_size,
-            backend=rpc.BackendType.TENSORPIPE,
-            rpc_backend_options=rpc_backend_options,
-        )
-        # parameter server does nothing
-        pass
 
     rpc.shutdown()
 
@@ -692,5 +698,4 @@ def main():
 #    output = job.result()
 
 if __name__ == "__main__":
-    # Use main() to launch locally and submit() to launch on fair cluster
     main()
