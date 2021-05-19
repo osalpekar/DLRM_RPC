@@ -181,32 +181,31 @@ def arg_parser():
     args = parser.parse_args()
 
     args.world_size = args.num_trainers + args.num_ps + 1
-    if args.master_addr == "":
-        args = distributed_args_setting(args)
+    #if args.master_addr == "":
+    #    args = distributed_args_setting(args)
 
     #assert args.distributed_rank is not None, "must provide rank argument."
+    RPC_PORT = "29500"
+    DDP_PORT = "29501"
+    os.environ["MASTER_PORT"] = RPC_PORT
 
     if args.master_addr is not "":
-        # This means SLURM is being used and all init args are set correctly
         os.environ['MASTER_ADDR'] = args.master_addr
-        os.environ["MASTER_PORT"] = args.distributed_port
+        master_addr = args.master_addr
     else:
-        # This means SLURM is NOT being used.
         # NOTE: This means you are restricted to single-node training.
         hostname = socket.gethostname()
-        LOCAL_IP = socket.gethostbyname(hostname)
-        RPC_PORT = "29500"
-        DDP_PORT = "29501"
-        os.environ['MASTER_ADDR'] = LOCAL_IP
-        os.environ["MASTER_PORT"] = RPC_PORT
-        args.init_method_rpc = 'tcp://{host}:{port}'.format(
-            host=LOCAL_IP,
-            port=RPC_PORT,
-        )
-        args.init_method_ddp = 'tcp://{host}:{port}'.format(
-            host=LOCAL_IP,
-            port=DDP_PORT,
-        )
+        master_addr = socket.gethostbyname(hostname)
+        os.environ['MASTER_ADDR'] = master_addr
+
+    args.init_method_rpc = 'tcp://{host}:{port}'.format(
+        host=master_addr,
+        port=RPC_PORT,
+    )
+    args.init_method_ddp = 'tcp://{host}:{port}'.format(
+        host=master_addr,
+        port=DDP_PORT,
+    )
 
     if args.mlperf_logging:
         print('command line args: ', json.dumps(vars(args)))
@@ -560,6 +559,7 @@ def run_trainer(args, emb_rref_list):
 
 
 def launch_ps(rank, world_size, args, rpc_backend_options):
+    print("Launching PS")
     # Init RPC
     ps_name = "ps{}".format(rank - args.num_trainers)
     rpc.init_rpc(
@@ -594,6 +594,7 @@ def launch_trainer(rank, world_size, args, rpc_backend_options):
     )
 
 def launch_master(rank, world_size, args, rpc_backend_options):
+    print("Launching Master")
     # Init RPC
     rpc.init_rpc(
         "master",
@@ -655,24 +656,50 @@ def run(localRank, world_size, args):
     numCudaDevices = torch.cuda.device_count()
     torch.cuda.set_device(localRank % numCudaDevices)
     
-
     #print("Rank {} is using GPU {}".format(rank, torch.cuda.current_device()))
 
     rpc_backend_options = rpc.TensorPipeRpcBackendOptions()
     rpc_backend_options.rpc_timeout = 100
     rpc_backend_options.init_method = args.init_method_rpc
 
-    # Rank 5: MASTER
-    if rank == (args.num_trainers + args.num_ps):
-        launch_master(rank, world_size, args, rpc_backend_options)
+    if args.num_nodes == 1:
+        # SINGLE NODE TRAINING
 
-    # Rank 0-3: Trainers
-    elif rank >= 0 and rank < args.num_trainers:
-       launch_trainer(rank, world_size, args, rpc_backend_options) 
+        # Rank 5: MASTER
+        if rank == (args.num_trainers + args.num_ps):
+            launch_master(rank, world_size, args, rpc_backend_options)
 
-    # Rank 4: Parameter Server
-    elif rank >= args.num_trainers and rank < (args.num_trainers + args.num_ps):
-        launch_ps(rank, world_size, args, rpc_backend_options)
+        # Rank 0-3: Trainers
+        elif rank >= 0 and rank < args.num_trainers:
+           launch_trainer(rank, world_size, args, rpc_backend_options) 
+
+        # Rank 4: Parameter Server
+        elif rank >= args.num_trainers and rank < (args.num_trainers + args.num_ps):
+            launch_ps(rank, world_size, args, rpc_backend_options)
+
+    elif args.num_nodes > 1: 
+        # MULTI NODE TRAINING (MUST BE 3 NODES)
+        #assert(args.num_nodes == 3)
+
+        print("Launching Correct Roles on localrank {}".format(rank))
+        
+        if args.node_rank == 0:
+            # Rank 0-7: Trainers
+            print("Launching Trainers")
+            launch_trainer(rank, world_size, args, rpc_backend_options) 
+        # TODO: uncommen below and change the last elif to args.node_rank == 2
+        #elif args.node_rank == 1:
+        #    # Rank 8-15: Trainers
+        #    print("Launching Trainers")
+        #    launch_trainer(rank, world_size, args, rpc_backend_options) 
+        elif args.node_rank == 1:
+            # Nodes 2 has the Master and Parameter Servers 
+            # PS's are ranks 16 ... (16 + #ps). In other words localRank 0 ... #ps
+            # Master is the rank following that
+            if localRank == args.num_ps:
+                launch_master(rank, world_size, args, rpc_backend_options)
+            elif localRank >= 0 and localRank <= args.num_ps:
+                launch_ps(rank, world_size, args, rpc_backend_options)
 
 
     rpc.shutdown()
@@ -696,6 +723,7 @@ def main():
 
     args.world_size = args.num_trainers + args.num_ps + 1
     args.use_gpu = args.use_gpu and torch.cuda.is_available()
+    print("Started main func on node rank {}".format(args.node_rank))
 
     mp.spawn(run, args=(args.world_size, args,), nprocs=local_world_size, join=True)
 

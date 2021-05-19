@@ -203,13 +203,20 @@ class DLRM_RPC(nn.Module):
         torch.futures.wait_all(futs)
         end = time.time()
 
-        delays = []
-        for index in range(len(timestamps)):
-            delays.append(compute_delay(timestamps[index], self.use_gpu))
+        # NOTE: The CUDA Synchronize makes this code really slow but allows us to
+        # measure RPC and embedding lookup. When benchmarking the whole thing,
+        # maybe we can turn this if check to False (will not measure comp/comms
+        # but total throughput is more accurate).
+        if False:
+            if self.use_gpu:
+                 torch.cuda.synchronize(0)
 
-        #mean = sum(delays)/len(delays)
-        #print(f"Embedding Lookup RPC {'cuda' if self.use_gpu else 'cpu'}: mean = {mean}, total = {end - start}", flush=True)
-        
+            delays = []
+            for index in range(len(timestamps)):
+                delays.append(compute_delay(timestamps[index], self.use_gpu))
+        else:
+            delays = [0]
+
         for fut in futs:
             embedding_lookup, inds = fut.value()
             #TODO: you can make this part a callback
