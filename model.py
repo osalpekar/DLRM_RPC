@@ -85,6 +85,7 @@ class Emb(nn.Module):
 
         set_rand_seed()
         self.device = select_device(use_gpu, rank)
+        self.use_gpu = use_gpu
         print("Using {} for Embeddings ...".format(self.device))
 
         self.emb_tab_ids = emb_tab_ids
@@ -102,6 +103,9 @@ class Emb(nn.Module):
     def forward(self, offsets, indices):
         outputs = []
 
+        timestamps = {}
+        timestamps["tik"] = stamp_time(self.use_gpu)
+
         for ind, val in enumerate(self.emb_tab_ids):
             sparse_indices = indices[val]
             sparse_offsets = offsets[val]
@@ -115,7 +119,16 @@ class Emb(nn.Module):
 
             outputs.append(Vec.cpu())
 
-        return outputs, self.emb_tab_ids
+        timestamps["tok"] = stamp_time(self.use_gpu)
+        # TODO: this synchronize will slow things down. Use only when you want the lookup
+        # time but not when you want the best total time. 
+        if True:
+            torch.cuda.synchronize(0)
+            delay = compute_delay(timestamps, self.use_gpu)	
+        else:
+            delay = 0
+
+        return outputs, self.emb_tab_ids, delay
 
 
 class DLRM_RPC(nn.Module):
@@ -207,18 +220,19 @@ class DLRM_RPC(nn.Module):
         # measure RPC and embedding lookup. When benchmarking the whole thing,
         # maybe we can turn this if check to False (will not measure comp/comms
         # but total throughput is more accurate).
+
+        total_rpc_times = []
         if False:
             if self.use_gpu:
                  torch.cuda.synchronize(0)
 
-            delays = []
             for index in range(len(timestamps)):
-                delays.append(compute_delay(timestamps[index], self.use_gpu))
+                total_rpc_times.append(compute_delay(timestamps[index], self.use_gpu))
         else:
-            delays = [0]
+            total_rpc_times = [0]
 
         for fut in futs:
-            embedding_lookup, inds = fut.value()
+            embedding_lookup, inds, embedding_lookup_time = fut.value()
             #TODO: you can make this part a callback
             for ind, val in enumerate(inds):
                 embedding_output[val] = embedding_lookup[ind]
@@ -233,7 +247,7 @@ class DLRM_RPC(nn.Module):
         # clamp to [0,1] to represent probability of click
         z = torch.clamp(p, min=self.loss_threshold, max=(1.0 - self.loss_threshold))
 
-        return z, delays, end-start
+        return z, total_rpc_times, embedding_lookup_time, end-start
 
     def interact_features(self, x, embedding_output):
         if self.arch_interaction_op == "dot":

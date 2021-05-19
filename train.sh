@@ -1,9 +1,9 @@
-GLOO_SOCKET_IFNAME=front0 \
-TP_SOCKET_IFNAME=front0 \
+GLOO_SOCKET_IFNAME=ens3 \
+TP_SOCKET_IFNAME=ens3 \
 python driver.py \
     --use-gpu \
-    --num-nodes 3 \
+    --num-nodes 2 \
     --node-rank $1 \
-    --num-trainers 16 \
-    --master-addr learnfair1216 \
+    --num-trainers 4 \
+    --master-addr q2-dy-p38xlarge-1 \
     &> "out$1"

@@ -189,7 +189,7 @@ def arg_parser():
     DDP_PORT = "29501"
     os.environ["MASTER_PORT"] = RPC_PORT
 
-    if args.master_addr is not "":
+    if args.master_addr != "":
         os.environ['MASTER_ADDR'] = args.master_addr
         master_addr = args.master_addr
     else:
@@ -427,6 +427,7 @@ def run_trainer(args, emb_rref_list):
     bwd_times = []
 
     rpc_fwd_times = []
+    embedding_lookup_times = []
 
     ######## RUN TRAINING LOOP ########
     with torch.autograd.profiler.profile(enabled=args.enable_profiling, use_cuda=args.use_gpu) as prof:
@@ -457,7 +458,7 @@ def run_trainer(args, emb_rref_list):
                 with dist_autograd.context() as context_id:
                     # Run forward pass
                     fwd_start = time_wrap(args.use_gpu)
-                    Z, rpc_delays, rpc_total = dlrm.forward(X, offsets, indices)
+                    Z, rpc_delays, embed_lookup_delay, rpc_total = dlrm.forward(X, offsets, indices)
                     fwd_end = time_wrap(args.use_gpu)
 
                     # Compute Loss
@@ -475,6 +476,7 @@ def run_trainer(args, emb_rref_list):
                         fwd_times.append(fwd_end - fwd_start)
                         bwd_times.append(bwd_end - bwd_start)
                         rpc_fwd_times.extend(rpc_delays)
+                        embedding_lookup_times.append(embed_lookup_delay)
 
                 # compute loss and accuracy
                 L = E.detach().cpu().numpy()  # numpy array
@@ -542,6 +544,8 @@ def run_trainer(args, emb_rref_list):
         std_bwd = 1000.0 * np.std(bwd_times)
         rpc_fwd_mean = 1000.0 * np.mean(rpc_fwd_times)
         rpc_fwd_std = 1000.0 * np.std(rpc_fwd_times)
+        embedding_fwd_mean = 1000.0 * np.mean(embedding_lookup_times)
+        embedding_fwd_std = 1000.0 * np.std(embedding_lookup_times)
 
         print("[Trainer {}] Average FWD Time (ms): {}".format(args.distributed_rank, mean_fwd))
         print("[Trainer {}] STD DEV FWD Time (ms): {}".format(args.distributed_rank, std_fwd))
@@ -549,6 +553,8 @@ def run_trainer(args, emb_rref_list):
         print("[Trainer {}] STD DEV BWD Time (ms): {}".format(args.distributed_rank, std_bwd))
         print("[Trainer {}] Average RPC FWD Time (ms): {}".format(args.distributed_rank, rpc_fwd_mean))
         print("[Trainer {}] STD DEV RPC FWD Time (ms): {}".format(args.distributed_rank, rpc_fwd_std))
+        print("[Trainer {}] Average Embedding Lookup Time (ms): {}".format(args.distributed_rank, embedding_fwd_mean))
+        print("[Trainer {}] STD DEV Embedding Lookup Time (ms): {}".format(args.distributed_rank, embedding_fwd_std))
 
     # profiling
     if args.enable_profiling:
@@ -574,8 +580,8 @@ def launch_ps(rank, world_size, args, rpc_backend_options):
 
 def launch_trainer(rank, world_size, args, rpc_backend_options):
     # Init PG for DDP
-    backend = dist.Backend.GLOO
-    #backend = dist.Backend.NCCL if args.use_gpu else dist.Backend.GLOO
+    #backend = dist.Backend.GLOO
+    backend = dist.Backend.NCCL if args.use_gpu else dist.Backend.GLOO
 
     dist.init_process_group(
         backend=backend,
@@ -649,7 +655,8 @@ def run(localRank, world_size, args):
     Rank 16: PS
     Rank 17: Master
     """
-    rank = localRank + (8 * args.node_rank)
+	#TODO: change to 8 in real run
+    rank = localRank + (4 * args.node_rank)
     if args.distributed_rank is None:
         args.distributed_rank = rank
 
@@ -715,9 +722,11 @@ def main():
 
     elif args.num_nodes > 1:
         # MULTI-NODE TRAINING
-        if args.node_rank == 0 or args.node_rank == 1:
-            local_world_size = 8
-        elif args.node_rank == 2:
+        if args.node_rank == 0:# or args.node_rank == 1:
+			# TODO: Make this 8 in real run	
+            local_world_size = 4
+        elif args.node_rank == 1:
+			# TODO: above line should be 2 in real run
             assert(args.num_ps < 7)
             local_world_size = args.num_ps + 1
 
