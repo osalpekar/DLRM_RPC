@@ -114,6 +114,7 @@ def arg_parser():
     parser.add_argument("--num-nodes", type=int, default=1)
     parser.add_argument("--node-rank", type=int, default=0)
     # model related parameters
+    parser.add_argument("--small-model", action="store_true", default=False)
     parser.add_argument("--arch-sparse-feature-size", type=int, default=2)
     parser.add_argument("--arch-embedding-size", type=str, default="4-3-2")
     # j will be replaced with the table number
@@ -613,6 +614,7 @@ def launch_master(rank, world_size, args, rpc_backend_options):
     # Build the Embedding tables on the Parameter Servers.
     ln_emb = np.fromstring(args.arch_embedding_size, dtype=int, sep="-")
     m_spa = args.arch_sparse_feature_size
+    # m_spa is embedding dim, ln_emb is num
     embedding_ids = set(range(0, ln_emb.size))
     # When we have a single PS, the PS rank is the # of trainers, since the
     # trainers have rank 0 through #trainers - 1.
@@ -714,6 +716,17 @@ def run(localRank, world_size, args):
 
 def main():
     args = arg_parser()
+
+    if args.small_model:
+        args.arch_sparse_feature_size = 2
+        args.arch_embedding_size = "4-3-2"
+        args.arch_mlp_bot = "4-3-2"
+        args.arch_mlp_top = "4-2-1"
+    else:
+        args.arch_sparse_feature_size = 256
+        args.arch_embedding_size = "46875"
+        args.arch_mlp_bot = "2000-1024-1024-512-256-256"
+        args.arch_mlp_top = "4096-4096-1"
 
     if args.num_nodes == 1:
         # SINGLE NODE TRAINING
