@@ -122,8 +122,9 @@ class Emb(nn.Module):
         timestamps["tok"] = stamp_time(self.use_gpu)
         # TODO: this synchronize will slow things down. Use only when you want the lookup
         # time but not when you want the best total time. 
-        if True:
-            torch.cuda.synchronize(0)
+        if False:
+            if self.use_gpu:
+                torch.cuda.synchronize(0)
             delay = compute_delay(timestamps, self.use_gpu)	
         else:
             delay = 0
@@ -213,10 +214,13 @@ class DLRM_RPC(nn.Module):
             futs.append(fut)
             index += 1
 
+        # pass input to the remote bottom MLP and get the output back
+        x = self.bot_mlp_ddp(dense_x)
+
         torch.futures.wait_all(futs)
         end = time.time()
 
-        # NOTE: The CUDA Synchronize makes this code really slow but allows us to
+        # TODO: The CUDA Synchronize makes this code slow but allows us to
         # measure RPC and embedding lookup. When benchmarking the whole thing,
         # maybe we can turn this if check to False (will not measure comp/comms
         # but total throughput is more accurate).
@@ -237,8 +241,6 @@ class DLRM_RPC(nn.Module):
             for ind, val in enumerate(inds):
                 embedding_output[val] = embedding_lookup[ind]
 
-        # pass input to the remote bottom MLP and get the output back
-        x = self.bot_mlp_ddp(dense_x)
         # interact features (dense and sparse)
         z = self.interact_features(x, embedding_output)
 
