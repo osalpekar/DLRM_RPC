@@ -515,12 +515,12 @@ def run_trainer(args, emb_rref_list):
                     total_loss = 0
 
                     str_run_type = "inference" if args.inference_only else "training"
-                    #print(
-                    #    "Finished {} it {}/{} of epoch {}, {:.2f} ms/it, ".format(
-                    #        str_run_type, j + 1, nbatches, epoch, gT
-                    #    )
-                    #    + "loss {:.6f}, accuracy {:3.3f} %".format(gL, gA * 100)
-                    #)
+                    print(
+                        "Finished {} it {}/{} of epoch {}, {:.2f} ms/it, ".format(
+                            str_run_type, j + 1, nbatches, epoch, gT
+                        )
+                        + "loss {:.6f}, accuracy {:3.3f} %".format(gL, gA * 100)
+                    )
 
                     log_iter = nbatches * epoch + j + 1
                     # Uncomment the line below to print out the total time with overhead
@@ -590,7 +590,7 @@ def launch_trainer(rank, world_size, args, rpc_backend_options):
         world_size=args.num_trainers,
         init_method=args.init_method_ddp,
     )
-    #print("Initialized PG on Trainer rank {}".format(rank))
+    print("Initialized PG on Trainer rank {}".format(rank))
 
     # Initialize RPC. Trainer just waits for RPCs from master.
     trainer_name = "trainer{}".format(rank)
@@ -600,7 +600,7 @@ def launch_trainer(rank, world_size, args, rpc_backend_options):
         world_size=world_size,
         rpc_backend_options=rpc_backend_options,
     )
-    #print("Initialized RPC on Trainer rank {}".format(rank))
+    print("Initialized RPC on Trainer rank {}".format(rank))
 
 def launch_master(rank, world_size, args, rpc_backend_options):
     print("Launching Master")
@@ -630,7 +630,7 @@ def launch_master(rank, world_size, args, rpc_backend_options):
         args=(m_spa, ln_emb, embedding_ids, args.use_gpu, param_server_rank),
     )
     emb_rref_list.append(emb_rref)
-    #print("Placed embeddings on master rank {}".format(rank))
+    print("Placed embeddings on master rank {}".format(rank))
 
     # Run the training loop on the trainers.
     futs = []
@@ -642,7 +642,7 @@ def launch_master(rank, world_size, args, rpc_backend_options):
         )
         futs.append(fut)
 
-    #print("started training from master rank {}".format(rank))
+    print("started training from master rank {}".format(rank))
     torch.futures.wait_all(futs)
 
 def run(localRank, world_size, args):
@@ -661,16 +661,16 @@ def run(localRank, world_size, args):
     Rank 16: PS
     Rank 17: Master
     """
-    #print("Entered run function")
+    print("Entered run function")
 	#TODO: change to 8 in real run
-    rank = localRank + (4 * args.node_rank)
+    rank = localRank + (8 * args.node_rank)
     if args.distributed_rank is None:
         args.distributed_rank = rank
 
     numCudaDevices = torch.cuda.device_count()
     torch.cuda.set_device(localRank % numCudaDevices)
     
-    #print("Rank {} is using GPU {}".format(rank, torch.cuda.current_device()))
+    print("Rank {} is using GPU {}".format(rank, torch.cuda.current_device()))
 
     rpc_backend_options = rpc.TensorPipeRpcBackendOptions()
     rpc_backend_options.rpc_timeout = 100
@@ -695,7 +695,7 @@ def run(localRank, world_size, args):
         # MULTI NODE TRAINING (MUST BE 3 NODES)
         #assert(args.num_nodes == 3)
 
-        #print("Launching Correct Roles on localrank {}".format(rank))
+        print("Launching Correct Roles on localrank {}".format(rank))
         
         if args.node_rank == 0:
             # Rank 0-7: Trainers
@@ -744,7 +744,7 @@ def main():
         # MULTI-NODE TRAINING
         if args.node_rank == 0:# or args.node_rank == 1:
 			# TODO: Make this 8 in real run	
-            local_world_size = 4
+            local_world_size = 8
         elif args.node_rank == 1:
 			# TODO: above line should be 2 in real run
             assert(args.num_ps < 7)
