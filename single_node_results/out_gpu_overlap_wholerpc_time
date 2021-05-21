@@ -1,0 +1,44 @@
+Started main func on node rank 0
+Using cuda:1 for top_mlp ...
+Using cuda:1 for bot_mlp ...
+[Trainer 1] Average FWD Time (ms): 5.417060852050781
+[Trainer 1] STD DEV FWD Time (ms): 0.509734866310806
+[Trainer 1] Average BWD Time (ms): 3.19364070892334
+[Trainer 1] STD DEV BWD Time (ms): 0.5663144765618554
+[Trainer 1] Average RPC FWD Time (ms): 4.460697650909425
+[Trainer 1] STD DEV RPC FWD Time (ms): 0.48818558582973554
+[Trainer 1] Average Embedding Lookup Time (ms): 0.0
+[Trainer 1] STD DEV Embedding Lookup Time (ms): 0.0
+Using cuda:3 for top_mlp ...
+Using cuda:3 for bot_mlp ...
+[Trainer 3] Average FWD Time (ms): 5.479609966278076
+[Trainer 3] STD DEV FWD Time (ms): 0.5632246032766856
+[Trainer 3] Average BWD Time (ms): 3.322434425354004
+[Trainer 3] STD DEV BWD Time (ms): 0.6828953698975644
+[Trainer 3] Average RPC FWD Time (ms): 4.542003202438353
+[Trainer 3] STD DEV RPC FWD Time (ms): 0.540531436782489
+[Trainer 3] Average Embedding Lookup Time (ms): 0.0
+[Trainer 3] STD DEV Embedding Lookup Time (ms): 0.0
+Using cuda:0 for top_mlp ...
+Using cuda:0 for bot_mlp ...
+[Trainer 0] Average FWD Time (ms): 5.475926399230957
+[Trainer 0] STD DEV FWD Time (ms): 0.3851822421632158
+[Trainer 0] Average BWD Time (ms): 3.541696071624756
+[Trainer 0] STD DEV BWD Time (ms): 0.37103249341320066
+[Trainer 0] Average RPC FWD Time (ms): 4.43674875497818
+[Trainer 0] STD DEV RPC FWD Time (ms): 0.3698690169656274
+[Trainer 0] Average Embedding Lookup Time (ms): 0.0
+[Trainer 0] STD DEV Embedding Lookup Time (ms): 0.0
+Using cuda:2 for top_mlp ...
+Using cuda:2 for bot_mlp ...
+[Trainer 2] Average FWD Time (ms): 5.426537990570068
+[Trainer 2] STD DEV FWD Time (ms): 0.4429051285988577
+[Trainer 2] Average BWD Time (ms): 3.5634636878967285
+[Trainer 2] STD DEV BWD Time (ms): 0.6065601671804695
+[Trainer 2] Average RPC FWD Time (ms): 4.507340812683105
+[Trainer 2] STD DEV RPC FWD Time (ms): 0.4414555567065898
+[Trainer 2] Average Embedding Lookup Time (ms): 0.0
+[Trainer 2] STD DEV Embedding Lookup Time (ms): 0.0
+Launching PS
+Using cuda:4 for Embeddings ...
+Launching Master

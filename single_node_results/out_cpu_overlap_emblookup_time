@@ -1,0 +1,44 @@
+Started main func on node rank 0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 3] Average FWD Time (ms): 39.69968557357788
+[Trainer 3] STD DEV FWD Time (ms): 26.854406898028248
+[Trainer 3] Average BWD Time (ms): 385.5355143547058
+[Trainer 3] STD DEV BWD Time (ms): 89.86344430121922
+[Trainer 3] Average RPC FWD Time (ms): 0.0
+[Trainer 3] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 3] Average Embedding Lookup Time (ms): 0.7235288619995117
+[Trainer 3] STD DEV Embedding Lookup Time (ms): 0.05469361178717398
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 2] Average FWD Time (ms): 35.25882959365845
+[Trainer 2] STD DEV FWD Time (ms): 24.94397121600248
+[Trainer 2] Average BWD Time (ms): 361.2322211265564
+[Trainer 2] STD DEV BWD Time (ms): 62.618436678100586
+[Trainer 2] Average RPC FWD Time (ms): 0.0
+[Trainer 2] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 2] Average Embedding Lookup Time (ms): 0.7347702980041504
+[Trainer 2] STD DEV Embedding Lookup Time (ms): 0.07107902347751394
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 1] Average FWD Time (ms): 69.67910528182983
+[Trainer 1] STD DEV FWD Time (ms): 50.45675541960195
+[Trainer 1] Average BWD Time (ms): 361.50944232940674
+[Trainer 1] STD DEV BWD Time (ms): 67.01331409195804
+[Trainer 1] Average RPC FWD Time (ms): 0.0
+[Trainer 1] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 1] Average Embedding Lookup Time (ms): 0.7689118385314941
+[Trainer 1] STD DEV Embedding Lookup Time (ms): 0.05272164627466966
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 0] Average FWD Time (ms): 27.88912057876587
+[Trainer 0] STD DEV FWD Time (ms): 18.817876865276222
+[Trainer 0] Average BWD Time (ms): 390.9651041030884
+[Trainer 0] STD DEV BWD Time (ms): 67.45912648812549
+[Trainer 0] Average RPC FWD Time (ms): 0.0
+[Trainer 0] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 0] Average Embedding Lookup Time (ms): 0.7832169532775879
+[Trainer 0] STD DEV Embedding Lookup Time (ms): 0.10184466125640439
+Launching Master
+Launching PS
+Using cpu for Embeddings ...
