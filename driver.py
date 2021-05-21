@@ -214,7 +214,7 @@ def arg_parser():
 
 def profile_hook(state_dict, bucket):
     rank = dist.get_rank()
-    tensor = bucket.get_tensors()[0]
+    tensor = bucket.get_tensor()[0]
     metrics = {}
     state_dict[bucket.get_index()] = metrics
 
