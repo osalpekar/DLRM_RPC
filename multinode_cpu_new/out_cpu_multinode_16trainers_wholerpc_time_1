@@ -1,0 +1,81 @@
+Started main func on node rank 1
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 10] Average FWD Time (ms): 110.87323427200317
+[Trainer 10] STD DEV FWD Time (ms): 110.53241162394879
+[Trainer 10] Average BWD Time (ms): 790.4404759407043
+[Trainer 10] STD DEV BWD Time (ms): 191.3687301238046
+[Trainer 10] Average RPC FWD Time (ms): 93.9048171043396
+[Trainer 10] STD DEV RPC FWD Time (ms): 103.89742018895508
+[Trainer 10] Average Embedding Lookup Time (ms): 0.0
+[Trainer 10] STD DEV Embedding Lookup Time (ms): 0.0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 8] Average FWD Time (ms): 150.88790655136108
+[Trainer 8] STD DEV FWD Time (ms): 114.88737360205587
+[Trainer 8] Average BWD Time (ms): 736.4870190620422
+[Trainer 8] STD DEV BWD Time (ms): 178.67405961279286
+[Trainer 8] Average RPC FWD Time (ms): 121.13844156265259
+[Trainer 8] STD DEV RPC FWD Time (ms): 95.63811269844328
+[Trainer 8] Average Embedding Lookup Time (ms): 0.0
+[Trainer 8] STD DEV Embedding Lookup Time (ms): 0.0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 15] Average FWD Time (ms): 123.70736598968506
+[Trainer 15] STD DEV FWD Time (ms): 103.96871398699041
+[Trainer 15] Average BWD Time (ms): 755.0481557846069
+[Trainer 15] STD DEV BWD Time (ms): 129.3060940752517
+[Trainer 15] Average RPC FWD Time (ms): 93.66211891174316
+[Trainer 15] STD DEV RPC FWD Time (ms): 94.53907777840263
+[Trainer 15] Average Embedding Lookup Time (ms): 0.0
+[Trainer 15] STD DEV Embedding Lookup Time (ms): 0.0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 11] Average FWD Time (ms): 119.74208354949951
+[Trainer 11] STD DEV FWD Time (ms): 123.6228556587869
+[Trainer 11] Average BWD Time (ms): 782.5457572937012
+[Trainer 11] STD DEV BWD Time (ms): 126.35362301614009
+[Trainer 11] Average RPC FWD Time (ms): 93.08364391326904
+[Trainer 11] STD DEV RPC FWD Time (ms): 120.19976155371025
+[Trainer 11] Average Embedding Lookup Time (ms): 0.0
+[Trainer 11] STD DEV Embedding Lookup Time (ms): 0.0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 14] Average FWD Time (ms): 113.34152221679688
+[Trainer 14] STD DEV FWD Time (ms): 108.23747639080824
+[Trainer 14] Average BWD Time (ms): 782.1565508842468
+[Trainer 14] STD DEV BWD Time (ms): 163.22977072041098
+[Trainer 14] Average RPC FWD Time (ms): 86.90111637115479
+[Trainer 14] STD DEV RPC FWD Time (ms): 92.62811264167208
+[Trainer 14] Average Embedding Lookup Time (ms): 0.0
+[Trainer 14] STD DEV Embedding Lookup Time (ms): 0.0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 13] Average FWD Time (ms): 96.86427116394043
+[Trainer 13] STD DEV FWD Time (ms): 114.39838206854175
+[Trainer 13] Average BWD Time (ms): 786.581301689148
+[Trainer 13] STD DEV BWD Time (ms): 118.64140531742291
+[Trainer 13] Average RPC FWD Time (ms): 68.64715814590454
+[Trainer 13] STD DEV RPC FWD Time (ms): 109.61165355569182
+[Trainer 13] Average Embedding Lookup Time (ms): 0.0
+[Trainer 13] STD DEV Embedding Lookup Time (ms): 0.0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 9] Average FWD Time (ms): 100.00886917114258
+[Trainer 9] STD DEV FWD Time (ms): 108.56106513163631
+[Trainer 9] Average BWD Time (ms): 835.1197242736816
+[Trainer 9] STD DEV BWD Time (ms): 151.38685602096717
+[Trainer 9] Average RPC FWD Time (ms): 59.4984769821167
+[Trainer 9] STD DEV RPC FWD Time (ms): 79.11304929914634
+[Trainer 9] Average Embedding Lookup Time (ms): 0.0
+[Trainer 9] STD DEV Embedding Lookup Time (ms): 0.0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+[Trainer 12] Average FWD Time (ms): 97.42919206619263
+[Trainer 12] STD DEV FWD Time (ms): 104.37680101975803
+[Trainer 12] Average BWD Time (ms): 802.4372696876526
+[Trainer 12] STD DEV BWD Time (ms): 139.82586802986128
+[Trainer 12] Average RPC FWD Time (ms): 63.59063386917114
+[Trainer 12] STD DEV RPC FWD Time (ms): 84.51815370996192
+[Trainer 12] Average Embedding Lookup Time (ms): 0.0
+[Trainer 12] STD DEV Embedding Lookup Time (ms): 0.0
