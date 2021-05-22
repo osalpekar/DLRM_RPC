@@ -1,0 +1,44 @@
+Started main func on node rank 0
+Using cuda:3 for top_mlp ...
+Using cuda:3 for bot_mlp ...
+[Trainer 3] Average FWD Time (ms): 5.805456638336182
+[Trainer 3] STD DEV FWD Time (ms): 0.48001634000606014
+[Trainer 3] Average BWD Time (ms): 3.381776809692383
+[Trainer 3] STD DEV BWD Time (ms): 0.6567770073052221
+[Trainer 3] Average RPC FWD Time (ms): 0.0
+[Trainer 3] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 3] Average Embedding Lookup Time (ms): 0.0
+[Trainer 3] STD DEV Embedding Lookup Time (ms): 0.0
+Using cuda:1 for top_mlp ...
+Using cuda:1 for bot_mlp ...
+[Trainer 1] Average FWD Time (ms): 5.846571922302246
+[Trainer 1] STD DEV FWD Time (ms): 0.4877285062764062
+[Trainer 1] Average BWD Time (ms): 3.281879425048828
+[Trainer 1] STD DEV BWD Time (ms): 0.5428156199923441
+[Trainer 1] Average RPC FWD Time (ms): 0.0
+[Trainer 1] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 1] Average Embedding Lookup Time (ms): 0.0
+[Trainer 1] STD DEV Embedding Lookup Time (ms): 0.0
+Using cuda:2 for top_mlp ...
+Using cuda:2 for bot_mlp ...
+[Trainer 2] Average FWD Time (ms): 5.81965446472168
+[Trainer 2] STD DEV FWD Time (ms): 0.47950994166397864
+[Trainer 2] Average BWD Time (ms): 3.4157514572143555
+[Trainer 2] STD DEV BWD Time (ms): 0.6966192857004152
+[Trainer 2] Average RPC FWD Time (ms): 0.0
+[Trainer 2] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 2] Average Embedding Lookup Time (ms): 0.0
+[Trainer 2] STD DEV Embedding Lookup Time (ms): 0.0
+Using cuda:0 for top_mlp ...
+Using cuda:0 for bot_mlp ...
+[Trainer 0] Average FWD Time (ms): 5.760455131530762
+[Trainer 0] STD DEV FWD Time (ms): 0.4679049011246841
+[Trainer 0] Average BWD Time (ms): 3.8264870643615723
+[Trainer 0] STD DEV BWD Time (ms): 0.4699329411643707
+[Trainer 0] Average RPC FWD Time (ms): 0.0
+[Trainer 0] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 0] Average Embedding Lookup Time (ms): 0.0
+[Trainer 0] STD DEV Embedding Lookup Time (ms): 0.0
+Launching Master
+Launching PS
+Using cuda:4 for Embeddings ...

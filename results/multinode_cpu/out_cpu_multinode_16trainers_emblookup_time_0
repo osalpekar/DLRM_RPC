@@ -1,0 +1,370 @@
+Local World Size for node rank 0 is 8
+Started main func on node rank 0
+Entered run function
+Rank 0 is using GPU 0
+Launching Correct Roles on localrank 0
+Launching Trainers
+Initialized PG on Trainer rank 0
+Initialized RPC on Trainer rank 0
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+Finished training it 1/1 of epoch 0, 3985.76 ms/it, loss 0.000205, accuracy 0.000 %
+Finished training it 1/1 of epoch 1, 1122.69 ms/it, loss 0.014943, accuracy 0.000 %
+Finished training it 1/1 of epoch 2, 1239.65 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 3, 954.01 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 4, 930.84 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 5, 999.89 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 6, 834.81 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 7, 1135.04 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 8, 1085.78 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 9, 1088.19 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 10, 934.79 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 11, 987.09 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 12, 1157.70 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 13, 1270.40 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 14, 916.34 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 15, 715.62 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 16, 1260.09 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 17, 1362.18 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 18, 1081.47 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 19, 1358.02 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 20, 737.84 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 21, 1116.38 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 22, 1195.81 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 23, 1014.28 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 24, 974.90 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 25, 1141.30 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 26, 993.87 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 27, 1338.81 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 28, 1044.70 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 29, 753.25 ms/it, loss 0.002202, accuracy 0.000 %
+[Trainer 0] Average FWD Time (ms): 271.77250385284424
+[Trainer 0] STD DEV FWD Time (ms): 172.7726652110389
+[Trainer 0] Average BWD Time (ms): 725.0926733016968
+[Trainer 0] STD DEV BWD Time (ms): 175.092942722192
+[Trainer 0] Average RPC FWD Time (ms): 0.0
+[Trainer 0] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 0] Average Embedding Lookup Time (ms): 0.8558869361877441
+[Trainer 0] STD DEV Embedding Lookup Time (ms): 0.2339364176397896
+Entered run function
+Rank 7 is using GPU 7
+Launching Correct Roles on localrank 7
+Launching Trainers
+Initialized PG on Trainer rank 7
+Initialized RPC on Trainer rank 7
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+Finished training it 1/1 of epoch 0, 4010.94 ms/it, loss 0.000205, accuracy 0.000 %
+Finished training it 1/1 of epoch 1, 1300.73 ms/it, loss 0.014943, accuracy 0.000 %
+Finished training it 1/1 of epoch 2, 1014.98 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 3, 787.35 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 4, 1231.20 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 5, 995.40 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 6, 734.41 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 7, 1050.72 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 8, 1067.08 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 9, 844.92 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 10, 1144.06 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 11, 1080.26 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 12, 1119.24 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 13, 1155.11 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 14, 1030.95 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 15, 889.08 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 16, 1229.19 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 17, 1239.13 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 18, 1443.80 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 19, 1283.66 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 20, 778.90 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 21, 1045.56 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 22, 1409.64 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 23, 885.40 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 24, 917.39 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 25, 1112.00 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 26, 709.63 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 27, 1258.85 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 28, 1136.66 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 29, 903.13 ms/it, loss 0.002202, accuracy 0.000 %
+[Trainer 7] Average FWD Time (ms): 329.99284267425537
+[Trainer 7] STD DEV FWD Time (ms): 156.6371558690667
+[Trainer 7] Average BWD Time (ms): 643.7638759613037
+[Trainer 7] STD DEV BWD Time (ms): 95.06907603272715
+[Trainer 7] Average RPC FWD Time (ms): 0.0
+[Trainer 7] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 7] Average Embedding Lookup Time (ms): 1.7992496490478516
+[Trainer 7] STD DEV Embedding Lookup Time (ms): 3.100975176571191
+Entered run function
+Rank 6 is using GPU 6
+Launching Correct Roles on localrank 6
+Launching Trainers
+Initialized PG on Trainer rank 6
+Initialized RPC on Trainer rank 6
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+Finished training it 1/1 of epoch 0, 3998.71 ms/it, loss 0.000205, accuracy 0.000 %
+Finished training it 1/1 of epoch 1, 1250.39 ms/it, loss 0.014943, accuracy 0.000 %
+Finished training it 1/1 of epoch 2, 1183.30 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 3, 884.26 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 4, 1065.07 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 5, 818.90 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 6, 864.37 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 7, 999.38 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 8, 1087.52 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 9, 926.25 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 10, 1126.18 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 11, 859.91 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 12, 1262.42 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 13, 1195.32 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 14, 984.13 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 15, 912.06 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 16, 1424.60 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 17, 989.09 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 18, 1173.93 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 19, 1509.18 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 20, 730.77 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 21, 983.69 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 22, 1572.87 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 23, 957.45 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 24, 914.51 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 25, 996.60 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 26, 1306.02 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 27, 853.35 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 28, 907.79 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 29, 1134.32 ms/it, loss 0.002202, accuracy 0.000 %
+[Trainer 6] Average FWD Time (ms): 284.5182538032532
+[Trainer 6] STD DEV FWD Time (ms): 173.6149204380973
+[Trainer 6] Average BWD Time (ms): 723.6980319023132
+[Trainer 6] STD DEV BWD Time (ms): 232.04032659255276
+[Trainer 6] Average RPC FWD Time (ms): 0.0
+[Trainer 6] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 6] Average Embedding Lookup Time (ms): 0.9257197380065918
+[Trainer 6] STD DEV Embedding Lookup Time (ms): 0.39485341463153095
+Entered run function
+Rank 3 is using GPU 3
+Launching Correct Roles on localrank 3
+Launching Trainers
+Initialized PG on Trainer rank 3
+Initialized RPC on Trainer rank 3
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+Finished training it 1/1 of epoch 0, 3993.55 ms/it, loss 0.000205, accuracy 0.000 %
+Finished training it 1/1 of epoch 1, 1228.13 ms/it, loss 0.014943, accuracy 0.000 %
+Finished training it 1/1 of epoch 2, 1041.29 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 3, 1100.73 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 4, 1061.34 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 5, 721.79 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 6, 1013.12 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 7, 1016.02 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 8, 826.95 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 9, 1016.73 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 10, 1418.10 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 11, 906.97 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 12, 1121.38 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 13, 1049.99 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 14, 1212.29 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 15, 933.27 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 16, 1088.09 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 17, 1056.08 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 18, 1544.47 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 19, 1264.02 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 20, 575.24 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 21, 1083.38 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 22, 1280.76 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 23, 802.23 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 24, 1312.73 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 25, 1196.93 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 26, 1105.55 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 27, 832.25 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 28, 1007.14 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 29, 1032.78 ms/it, loss 0.002202, accuracy 0.000 %
+[Trainer 3] Average FWD Time (ms): 253.6270022392273
+[Trainer 3] STD DEV FWD Time (ms): 190.7326404573419
+[Trainer 3] Average BWD Time (ms): 728.835129737854
+[Trainer 3] STD DEV BWD Time (ms): 159.1072907664
+[Trainer 3] Average RPC FWD Time (ms): 0.0
+[Trainer 3] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 3] Average Embedding Lookup Time (ms): 0.9513616561889648
+[Trainer 3] STD DEV Embedding Lookup Time (ms): 0.3968158003209197
+Entered run function
+Rank 4 is using GPU 4
+Launching Correct Roles on localrank 4
+Launching Trainers
+Initialized PG on Trainer rank 4
+Initialized RPC on Trainer rank 4
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+Finished training it 1/1 of epoch 0, 3999.47 ms/it, loss 0.000205, accuracy 0.000 %
+Finished training it 1/1 of epoch 1, 1221.72 ms/it, loss 0.014943, accuracy 0.000 %
+Finished training it 1/1 of epoch 2, 1047.96 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 3, 921.32 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 4, 1175.13 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 5, 942.94 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 6, 727.03 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 7, 1238.33 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 8, 860.49 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 9, 866.79 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 10, 1307.69 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 11, 833.45 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 12, 1139.71 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 13, 1079.50 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 14, 1198.66 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 15, 1043.49 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 16, 1390.12 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 17, 766.19 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 18, 1222.15 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 19, 1322.61 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 20, 1158.21 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 21, 882.71 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 22, 1391.58 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 23, 586.30 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 24, 1351.07 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 25, 1059.97 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 26, 811.81 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 27, 1450.84 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 28, 781.29 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 29, 967.44 ms/it, loss 0.002202, accuracy 0.000 %
+[Trainer 4] Average FWD Time (ms): 233.6786389350891
+[Trainer 4] STD DEV FWD Time (ms): 156.65623445545486
+[Trainer 4] Average BWD Time (ms): 778.6671280860901
+[Trainer 4] STD DEV BWD Time (ms): 255.9417824569465
+[Trainer 4] Average RPC FWD Time (ms): 0.0
+[Trainer 4] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 4] Average Embedding Lookup Time (ms): 0.8925080299377441
+[Trainer 4] STD DEV Embedding Lookup Time (ms): 0.17058329462664204
+Entered run function
+Rank 2 is using GPU 2
+Launching Correct Roles on localrank 2
+Launching Trainers
+Initialized PG on Trainer rank 2
+Initialized RPC on Trainer rank 2
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+Finished training it 1/1 of epoch 0, 4000.43 ms/it, loss 0.000205, accuracy 0.000 %
+Finished training it 1/1 of epoch 1, 1121.75 ms/it, loss 0.014943, accuracy 0.000 %
+Finished training it 1/1 of epoch 2, 1105.88 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 3, 1194.45 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 4, 891.93 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 5, 1113.70 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 6, 602.76 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 7, 1002.57 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 8, 1366.47 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 9, 653.59 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 10, 1185.07 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 11, 1011.35 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 12, 988.95 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 13, 1348.22 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 14, 1064.51 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 15, 874.09 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 16, 1469.50 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 17, 974.59 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 18, 1080.65 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 19, 1231.92 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 20, 975.79 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 21, 933.96 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 22, 1295.85 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 23, 1055.61 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 24, 1132.28 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 25, 1301.38 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 26, 638.01 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 27, 1193.52 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 28, 1013.01 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 29, 911.07 ms/it, loss 0.002202, accuracy 0.000 %
+[Trainer 2] Average FWD Time (ms): 306.39110803604126
+[Trainer 2] STD DEV FWD Time (ms): 172.30471313844544
+[Trainer 2] Average BWD Time (ms): 663.6375546455383
+[Trainer 2] STD DEV BWD Time (ms): 158.8581392632609
+[Trainer 2] Average RPC FWD Time (ms): 0.0
+[Trainer 2] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 2] Average Embedding Lookup Time (ms): 1.0179638862609863
+[Trainer 2] STD DEV Embedding Lookup Time (ms): 0.6190859676597575
+Entered run function
+Rank 5 is using GPU 5
+Launching Correct Roles on localrank 5
+Launching Trainers
+Initialized PG on Trainer rank 5
+Initialized RPC on Trainer rank 5
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+Finished training it 1/1 of epoch 0, 4015.94 ms/it, loss 0.000205, accuracy 0.000 %
+Finished training it 1/1 of epoch 1, 1177.68 ms/it, loss 0.014943, accuracy 0.000 %
+Finished training it 1/1 of epoch 2, 1021.28 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 3, 1040.91 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 4, 1141.40 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 5, 980.73 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 6, 703.43 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 7, 1015.52 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 8, 1117.41 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 9, 827.23 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 10, 1160.90 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 11, 892.49 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 12, 1362.84 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 13, 947.64 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 14, 1364.41 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 15, 1197.43 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 16, 1042.30 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 17, 816.10 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 18, 1325.36 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 19, 1331.97 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 20, 952.10 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 21, 1443.89 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 22, 803.20 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 23, 782.03 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 24, 1226.02 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 25, 1148.79 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 26, 822.39 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 27, 1331.64 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 28, 1154.00 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 29, 679.68 ms/it, loss 0.002202, accuracy 0.000 %
+[Trainer 5] Average FWD Time (ms): 308.8785171508789
+[Trainer 5] STD DEV FWD Time (ms): 157.97657705769944
+[Trainer 5] Average BWD Time (ms): 635.7285261154175
+[Trainer 5] STD DEV BWD Time (ms): 136.69379947311404
+[Trainer 5] Average RPC FWD Time (ms): 0.0
+[Trainer 5] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 5] Average Embedding Lookup Time (ms): 0.9397387504577637
+[Trainer 5] STD DEV Embedding Lookup Time (ms): 0.5098787451127461
+Entered run function
+Rank 1 is using GPU 1
+Launching Correct Roles on localrank 1
+Launching Trainers
+Initialized PG on Trainer rank 1
+Initialized RPC on Trainer rank 1
+Using cpu for top_mlp ...
+Using cpu for bot_mlp ...
+Finished training it 1/1 of epoch 0, 3972.55 ms/it, loss 0.000205, accuracy 0.000 %
+Finished training it 1/1 of epoch 1, 1172.99 ms/it, loss 0.014943, accuracy 0.000 %
+Finished training it 1/1 of epoch 2, 1088.74 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 3, 924.10 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 4, 1277.28 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 5, 793.47 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 6, 930.59 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 7, 1100.06 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 8, 1008.04 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 9, 890.59 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 10, 1429.42 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 11, 688.46 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 12, 939.08 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 13, 1366.72 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 14, 893.16 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 15, 865.06 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 16, 1458.03 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 17, 1293.52 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 18, 1230.78 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 19, 1218.29 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 20, 844.64 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 21, 1444.08 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 22, 920.96 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 23, 875.25 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 24, 738.87 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 25, 1234.27 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 26, 998.09 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 27, 1242.19 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 28, 1108.68 ms/it, loss 0.002202, accuracy 0.000 %
+Finished training it 1/1 of epoch 29, 828.62 ms/it, loss 0.002202, accuracy 0.000 %
+[Trainer 1] Average FWD Time (ms): 276.7385721206665
+[Trainer 1] STD DEV FWD Time (ms): 126.97789553586585
+[Trainer 1] Average BWD Time (ms): 672.0152020454407
+[Trainer 1] STD DEV BWD Time (ms): 200.8225258238731
+[Trainer 1] Average RPC FWD Time (ms): 0.0
+[Trainer 1] STD DEV RPC FWD Time (ms): 0.0
+[Trainer 1] Average Embedding Lookup Time (ms): 0.9852051734924316
+[Trainer 1] STD DEV Embedding Lookup Time (ms): 0.5082900753156432
