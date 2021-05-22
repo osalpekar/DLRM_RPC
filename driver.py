@@ -702,18 +702,23 @@ def run(localRank, world_size, args):
             print("Launching Trainers")
             launch_trainer(rank, world_size, args, rpc_backend_options) 
         # TODO: uncommen below and change the last elif to args.node_rank == 2
-        #elif args.node_rank == 1:
-        #    # Rank 8-15: Trainers
-        #    print("Launching Trainers")
-        #    launch_trainer(rank, world_size, args, rpc_backend_options) 
         elif args.node_rank == 1:
+            # Rank 8-15: Trainers
+            print("Launching Trainers")
+            launch_trainer(rank, world_size, args, rpc_backend_options) 
+        elif args.node_rank == 2:
             # Nodes 2 has the Master and Parameter Servers 
             # PS's are ranks 16 ... (16 + #ps). In other words localRank 0 ... #ps
             # Master is the rank following that
-            if localRank == args.num_ps:
-                launch_master(rank, world_size, args, rpc_backend_options)
-            elif localRank >= 0 and localRank <= args.num_ps:
+            if rank == 16:
                 launch_ps(rank, world_size, args, rpc_backend_options)
+            elif rank == 17:
+                launch_master(rank, world_size, args, rpc_backend_options)
+
+            #if localRank == args.num_ps:
+            #    launch_master(rank, world_size, args, rpc_backend_options)
+            #elif localRank >= 0 and localRank < args.num_ps:
+            #    launch_ps(rank, world_size, args, rpc_backend_options)
 
 
     rpc.shutdown()
@@ -742,14 +747,15 @@ def main():
 
     elif args.num_nodes > 1:
         # MULTI-NODE TRAINING
-        if args.node_rank == 0:# or args.node_rank == 1:
+        if args.node_rank == 0 or args.node_rank == 1:
 			# TODO: Make this 8 in real run	
             local_world_size = 8
-        elif args.node_rank == 1:
+        elif args.node_rank == 2:
 			# TODO: above line should be 2 in real run
             assert(args.num_ps < 7)
             local_world_size = args.num_ps + 1
 
+    print("Local World Size for node rank {} is {}".format(args.node_rank, local_world_size))
     args.world_size = args.num_trainers + args.num_ps + 1
     args.use_gpu = args.use_gpu and torch.cuda.is_available()
     print("Started main func on node rank {}".format(args.node_rank))

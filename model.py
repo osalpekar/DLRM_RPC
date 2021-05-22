@@ -180,7 +180,7 @@ class DLRM_RPC(nn.Module):
         top_mlp = MLP(ln_top, sigmoid_top, use_gpu, rank, name="top_mlp")
         bot_mlp = MLP(ln_bot, sigmoid_bot, use_gpu, rank, name="bot_mlp")
 
-        device_ids = [rank] if use_gpu else None
+        device_ids = [rank % torch.cuda.device_count()] if use_gpu else None
         self.top_mlp_ddp = DDP(top_mlp.to(self.device), device_ids=device_ids)
         self.bot_mlp_ddp = DDP(bot_mlp.to(self.device), device_ids=device_ids)
 
