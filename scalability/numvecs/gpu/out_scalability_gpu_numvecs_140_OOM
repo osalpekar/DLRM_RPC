@@ -1,0 +1,127 @@
+Started main func on node rank 0
+[W tensorpipe_agent.cpp:845] RPC agent for trainer1 encountered error when reading incoming request from master: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+[W tensorpipe_agent.cpp:845] RPC agent for trainer3 encountered error when reading incoming request from master: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+[W tensorpipe_agent.cpp:845] RPC agent for trainer0 encountered error when reading incoming request from master: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+[W tensorpipe_agent.cpp:845] RPC agent for ps0 encountered error when reading incoming request from master: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+[W tensorpipe_agent.cpp:845] RPC agent for trainer2 encountered error when reading incoming request from master: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+[W tensorpipe_agent.cpp:845] RPC agent for ps0 encountered error when reading incoming request from trainer0: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+[W tensorpipe_agent.cpp:845] RPC agent for ps0 encountered error when reading incoming request from trainer1: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+[W tensorpipe_agent.cpp:845] RPC agent for ps0 encountered error when reading incoming request from trainer2: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+[W tensorpipe_agent.cpp:845] RPC agent for ps0 encountered error when reading incoming request from trainer3: eof (this error originated at tensorpipe/transport/shm/connection_impl.cc:259)
+Traceback (most recent call last):
+  File "driver.py", line 801, in <module>
+    main()
+  File "driver.py", line 788, in main
+    mp.spawn(run, args=(args.world_size, args,), nprocs=local_world_size, join=True)
+  File "/data/home/shenli/projects/pytorch/torch/multiprocessing/spawn.py", line 230, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method='spawn')
+  File "/data/home/shenli/projects/pytorch/torch/multiprocessing/spawn.py", line 188, in start_processes
+    while not context.join():
+  File "/data/home/shenli/projects/pytorch/torch/multiprocessing/spawn.py", line 150, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 5 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/home/shenli/projects/pytorch/torch/multiprocessing/spawn.py", line 59, in _wrap
+    fn(i, *args)
+  File "/data/home/osalpekar/dlrm_rpc/driver.py", line 693, in run
+    launch_master(rank, world_size, args, rpc_backend_options)
+  File "/data/home/osalpekar/dlrm_rpc/driver.py", line 655, in launch_master
+    torch.futures.wait_all(futs)
+  File "/data/home/shenli/projects/pytorch/torch/futures/__init__.py", line 267, in wait_all
+    return [fut.wait() for fut in torch._C._collect_all(cast(List[torch._C.Future], futures)).wait()]
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 207, in _handle_exception
+    raise result.exception_type(result.msg.encode("utf-8").decode("unicode_escape"))
+RuntimeError: On WorkerInfo(id=1, name=trainer1):
+RuntimeError('On WorkerInfo(id=4, name=ps0):
+RuntimeError('On WorkerInfo(id=4, name=ps0):
+RuntimeError('CUDA out of memory. Tried to allocate 4.77 GiB (GPU 4; 31.75 GiB total capacity; 28.61 GiB already allocated; 2.25 GiB free; 28.62 GiB reserved in total by PyTorch)')
+Traceback (most recent call last):
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 193, in _run_function
+    result = python_udf.func(*python_udf.args, **python_udf.kwargs)
+  File "/data/home/osalpekar/dlrm_rpc/model.py", line 98, in __init__
+    EE = EE.to(self.device)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 852, in to
+    return self._apply(convert)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 552, in _apply
+    param_applied = fn(param)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 850, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+RuntimeError: CUDA out of memory. Tried to allocate 4.77 GiB (GPU 4; 31.75 GiB total capacity; 28.61 GiB already allocated; 2.25 GiB free; 28.62 GiB reserved in total by PyTorch)
+')
+Traceback (most recent call last):
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 193, in _run_function
+    result = python_udf.func(*python_udf.args, **python_udf.kwargs)
+  File "/data/home/osalpekar/dlrm_rpc/driver.py", line 62, in _retrieve_embedding_parameters
+    return [RRef(p) for p in emb_rref.local_value().parameters()]
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 207, in _handle_exception
+    raise result.exception_type(result.msg.encode("utf-8").decode("unicode_escape"))
+RuntimeError: On WorkerInfo(id=4, name=ps0):
+RuntimeError('CUDA out of memory. Tried to allocate 4.77 GiB (GPU 4; 31.75 GiB total capacity; 28.61 GiB already allocated; 2.25 GiB free; 28.62 GiB reserved in total by PyTorch)')
+Traceback (most recent call last):
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 193, in _run_function
+    result = python_udf.func(*python_udf.args, **python_udf.kwargs)
+  File "/data/home/osalpekar/dlrm_rpc/model.py", line 98, in __init__
+    EE = EE.to(self.device)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 852, in to
+    return self._apply(convert)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 552, in _apply
+    param_applied = fn(param)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 850, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+RuntimeError: CUDA out of memory. Tried to allocate 4.77 GiB (GPU 4; 31.75 GiB total capacity; 28.61 GiB already allocated; 2.25 GiB free; 28.62 GiB reserved in total by PyTorch)
+
+')
+Traceback (most recent call last):
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 193, in _run_function
+    result = python_udf.func(*python_udf.args, **python_udf.kwargs)
+  File "/data/home/osalpekar/dlrm_rpc/driver.py", line 394, in run_trainer
+    rpc.rpc_sync(ps_name, _retrieve_embedding_parameters, args=(emb_rref,))
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/api.py", line 79, in wrapper
+    return func(*args, **kwargs)
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/api.py", line 734, in rpc_sync
+    return fut.wait()
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 207, in _handle_exception
+    raise result.exception_type(result.msg.encode("utf-8").decode("unicode_escape"))
+RuntimeError: On WorkerInfo(id=4, name=ps0):
+RuntimeError('On WorkerInfo(id=4, name=ps0):
+RuntimeError('CUDA out of memory. Tried to allocate 4.77 GiB (GPU 4; 31.75 GiB total capacity; 28.61 GiB already allocated; 2.25 GiB free; 28.62 GiB reserved in total by PyTorch)')
+Traceback (most recent call last):
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 193, in _run_function
+    result = python_udf.func(*python_udf.args, **python_udf.kwargs)
+  File "/data/home/osalpekar/dlrm_rpc/model.py", line 98, in __init__
+    EE = EE.to(self.device)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 852, in to
+    return self._apply(convert)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 552, in _apply
+    param_applied = fn(param)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 850, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+RuntimeError: CUDA out of memory. Tried to allocate 4.77 GiB (GPU 4; 31.75 GiB total capacity; 28.61 GiB already allocated; 2.25 GiB free; 28.62 GiB reserved in total by PyTorch)
+')
+Traceback (most recent call last):
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 193, in _run_function
+    result = python_udf.func(*python_udf.args, **python_udf.kwargs)
+  File "/data/home/osalpekar/dlrm_rpc/driver.py", line 62, in _retrieve_embedding_parameters
+    return [RRef(p) for p in emb_rref.local_value().parameters()]
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 207, in _handle_exception
+    raise result.exception_type(result.msg.encode("utf-8").decode("unicode_escape"))
+RuntimeError: On WorkerInfo(id=4, name=ps0):
+RuntimeError('CUDA out of memory. Tried to allocate 4.77 GiB (GPU 4; 31.75 GiB total capacity; 28.61 GiB already allocated; 2.25 GiB free; 28.62 GiB reserved in total by PyTorch)')
+Traceback (most recent call last):
+  File "/data/home/shenli/projects/pytorch/torch/distributed/rpc/internal.py", line 193, in _run_function
+    result = python_udf.func(*python_udf.args, **python_udf.kwargs)
+  File "/data/home/osalpekar/dlrm_rpc/model.py", line 98, in __init__
+    EE = EE.to(self.device)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 852, in to
+    return self._apply(convert)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 552, in _apply
+    param_applied = fn(param)
+  File "/data/home/shenli/projects/pytorch/torch/nn/modules/module.py", line 850, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+RuntimeError: CUDA out of memory. Tried to allocate 4.77 GiB (GPU 4; 31.75 GiB total capacity; 28.61 GiB already allocated; 2.25 GiB free; 28.62 GiB reserved in total by PyTorch)
+
+
+
+
